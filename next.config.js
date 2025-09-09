@@ -9,8 +9,6 @@ const nextConfig = {
     domains: ['res.cloudinary.com', 'images.unsplash.com'],
   },
   trailingSlash: false,
-  assetPrefix: process.env.NODE_ENV === 'production' ? '' : '',
-  basePath: '',
 }
 
 module.exports = withNextIntl(nextConfig)

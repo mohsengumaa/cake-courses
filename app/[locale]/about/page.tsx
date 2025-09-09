@@ -46,23 +46,23 @@ export default function AboutPage() {
           <div className="flex justify-between h-16">
             <div className="flex">
               <Link href="/" className="flex-shrink-0 flex items-center">
-                <span className="text-xl font-bold text-pink-600">DonnaTalia Courses</span>
+                <span className="text-xl font-bold text-primary-500">DonnaTalia Courses</span>
               </Link>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link href="/courses" className="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors">
+                <Link href="/courses" className="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium transition-colors">
                   {commonT('courses')}
                 </Link>
-                <Link href="/about" className="text-pink-600 px-3 py-2 text-sm font-medium border-b-2 border-pink-600">
+                <Link href="/about" className="text-primary-500 px-3 py-2 text-sm font-medium border-b-2 border-primary-500">
                   {commonT('about')}
                 </Link>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
-              <Link href="/login" className="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium transition-colors">
+              <Link href="/login" className="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium transition-colors">
                 {commonT('login')}
               </Link>
-              <Link href="/register" className="bg-pink-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-pink-700 transition-colors">
+              <Link href="/register" className="bg-primary-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary-600 transition-colors">
                 {commonT('signup')}
               </Link>
             </div>
@@ -71,7 +71,7 @@ export default function AboutPage() {
       </nav>
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-r from-pink-500 to-purple-600 overflow-hidden">
+      <div className="relative bg-gradient-to-r from-primary-500 to-dark-500 overflow-hidden">
         <div className="absolute inset-0 bg-black opacity-40"></div>
         <div className="relative max-w-7xl mx-auto py-20 px-4 sm:py-32 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl animate-fade-in">
@@ -103,7 +103,7 @@ export default function AboutPage() {
               <div className="mt-8 space-y-4">
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-md bg-pink-500 text-white">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-md bg-primary-500 text-white">
                       <span className="text-sm font-bold">1</span>
                     </div>
                   </div>
@@ -114,7 +114,7 @@ export default function AboutPage() {
                 </div>
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-md bg-pink-500 text-white">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-md bg-primary-500 text-white">
                       <span className="text-sm font-bold">2</span>
                     </div>
                   </div>
@@ -125,7 +125,7 @@ export default function AboutPage() {
                 </div>
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-md bg-pink-500 text-white">
+                    <div className="flex items-center justify-center h-8 w-8 rounded-md bg-primary-500 text-white">
                       <span className="text-sm font-bold">3</span>
                     </div>
                   </div>
@@ -171,8 +171,8 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div key={index} className="text-center group">
-                <div className="mx-auto h-20 w-20 bg-pink-100 rounded-full flex items-center justify-center group-hover:bg-pink-200 transition-colors">
-                  <span className="text-2xl font-bold text-pink-600">{stat.number}</span>
+                <div className="mx-auto h-20 w-20 bg-primary-100 rounded-full flex items-center justify-center group-hover:bg-primary-200 transition-colors">
+                  <span className="text-2xl font-bold text-primary-500">{stat.number}</span>
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-gray-900">{stat.label}</h3>
               </div>
@@ -206,7 +206,7 @@ export default function AboutPage() {
                   />
                 </div>
                 <h3 className="mt-6 text-xl font-semibold text-gray-900">{member.name}</h3>
-                <p className="mt-2 text-lg text-pink-600 font-medium">{member.role}</p>
+                <p className="mt-2 text-lg text-primary-500 font-medium">{member.role}</p>
                 <p className="mt-4 text-base text-gray-500">{member.description}</p>
               </div>
             ))}
@@ -215,7 +215,7 @@ export default function AboutPage() {
       </div>
 
       {/* Mission Section */}
-      <div className="py-16 bg-gradient-to-r from-pink-500 to-purple-600">
+      <div className="py-16 bg-gradient-to-r from-primary-500 to-dark-500">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
             {t('missionTitle')}
@@ -224,7 +224,7 @@ export default function AboutPage() {
             {t('missionDescription')}
           </p>
           <div className="mt-8">
-            <Link href="/courses" className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-pink-600 bg-white hover:bg-gray-50 transition-colors">
+            <Link href="/courses" className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-primary-500 bg-white hover:bg-gray-50 transition-colors">
               {t('startLearning')}
             </Link>
           </div>

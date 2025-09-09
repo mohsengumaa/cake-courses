@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import AIChatbot from '@/components/AIChatbot';
@@ -7,6 +8,25 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function DashboardPage() {
   const t = useTranslations('Dashboard');
+  const [user, setUser] = useState<any>(null);
+  const [authProvider, setAuthProvider] = useState<string>('');
+
+  useEffect(() => {
+    // جلب بيانات المستخدم من localStorage
+    const userData = localStorage.getItem('user');
+    const provider = localStorage.getItem('authProvider');
+    
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+    if (provider) {
+      setAuthProvider(provider);
+    }
+  }, []);
+
+  // جلب الدورات المشتراة
+  const purchasedCourses = JSON.parse(localStorage.getItem('purchasedCourses') || '[]');
+  const payments = JSON.parse(localStorage.getItem('payments') || '[]');
 
   const enrolledCourses = [
     {
@@ -45,13 +65,13 @@ export default function DashboardPage() {
           <div className="flex justify-between h-16">
             <div className="flex">
               <Link href="/" className="flex-shrink-0 flex items-center">
-                <span className="text-xl font-bold text-pink-600">DonnaTalia Courses</span>
+                <span className="text-xl font-bold text-primary-500">DonnaTalia Courses</span>
               </Link>
               <div className="ml-6 flex space-x-8">
-                <Link href="/courses" className="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium">
+                <Link href="/courses" className="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium">
                   {t('courses')}
                 </Link>
-                <Link href="/dashboard" className="text-pink-600 px-3 py-2 text-sm font-medium border-b-2 border-pink-600">
+                <Link href="/dashboard" className="text-primary-500 px-3 py-2 text-sm font-medium border-b-2 border-primary-500">
                   {t('dashboard')}
                 </Link>
               </div>
@@ -59,12 +79,32 @@ export default function DashboardPage() {
             <div className="flex items-center space-x-4">
               <LanguageSwitcher />
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center">
-                  <span className="text-pink-600 text-sm font-medium">U</span>
-                </div>
-                <span className="text-sm text-gray-700">User Name</span>
+                {user ? (
+                  <>
+                    <div className="w-8 h-8 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-full flex items-center justify-center">
+                      {user.avatar ? (
+                        <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full" />
+                      ) : (
+                        <span className="text-white text-sm font-medium">
+                          {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-gray-700">{user.name}</span>
+                      <span className="text-xs text-gray-500 capitalize">{authProvider}</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
+                      <span className="text-primary-500 text-sm font-medium">U</span>
+                    </div>
+                    <span className="text-sm text-gray-700">User Name</span>
+                  </>
+                )}
               </div>
-              <button className="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium">
+              <button className="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium">
                 {t('logout')}
               </button>
             </div>
@@ -138,14 +178,14 @@ export default function DashboardPage() {
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
                             <div 
-                              className="bg-pink-600 h-2 rounded-full" 
+                              className="bg-primary-500 h-2 rounded-full" 
                               style={{ width: `${course.progress}%` }}
                             ></div>
                           </div>
                         </div>
                         <Link
                           href={`/courses/${course.id}`}
-                          className="bg-pink-600 text-white px-4 py-2 rounded-md hover:bg-pink-700 transition-colors text-sm font-medium"
+                          className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition-colors text-sm font-medium"
                         >
                           {t('continue')}
                         </Link>
@@ -165,6 +205,40 @@ export default function DashboardPage() {
               </Link>
             </div>
           </div>
+
+          {/* Payment History */}
+          {payments.length > 0 && (
+            <div className="bg-white rounded-lg shadow-md p-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">{t('paymentHistory')}</h2>
+              <div className="space-y-4">
+                {payments.slice(0, 5).map((payment: any) => (
+                  <div key={payment.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-semibold text-gray-900">{payment.courseTitle}</h3>
+                        <p className="text-sm text-gray-500">
+                          {new Date(payment.timestamp).toLocaleDateString()} - {payment.method}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-green-600">
+                          {payment.amount} {payment.currency}
+                        </p>
+                        <p className="text-xs text-gray-500 capitalize">{payment.status}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {payments.length > 5 && (
+                <div className="text-center mt-4">
+                  <button className="text-primary-600 hover:text-primary-700 font-medium text-sm">
+                    {t('viewAllPayments')}
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Completed Courses */}
           <div className="bg-white rounded-lg shadow-md p-6">

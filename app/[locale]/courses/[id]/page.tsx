@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import AIChatbot from '@/components/AIChatbot';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import PaymentSystem from '@/components/PaymentSystem';
 
 
 interface Course {
@@ -70,6 +71,13 @@ export default function CoursePage() {
   const [currency, setCurrency] = useState<'usd' | 'eur' | 'aed'>('usd');
   const [showPayment, setShowPayment] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isPurchased, setIsPurchased] = useState(false);
+
+  // التحقق من حالة الشراء
+  useState(() => {
+    const purchasedCourses = JSON.parse(localStorage.getItem('purchasedCourses') || '[]');
+    setIsPurchased(purchasedCourses.includes(params.id));
+  }, [params.id]);
 
   const getCurrencySymbol = (curr: string) => {
     switch (curr) {
@@ -78,6 +86,17 @@ export default function CoursePage() {
       case 'aed': return 'د.إ';
       default: return '$';
     }
+  };
+
+  const handlePaymentSuccess = (paymentData: any) => {
+    console.log('Payment successful:', paymentData);
+    setIsPurchased(true);
+    setShowPayment(false);
+  };
+
+  const handlePaymentError = (error: string) => {
+    console.error('Payment error:', error);
+    setIsProcessing(false);
   };
 
   const handleEnrollClick = () => {
@@ -104,10 +123,10 @@ export default function CoursePage() {
           <div className="flex justify-between h-16">
             <div className="flex">
               <Link href="/" className="flex-shrink-0 flex items-center">
-                <span className="text-xl font-bold text-pink-600">DonnaTalia Courses</span>
+                <span className="text-xl font-bold text-primary-500">DonnaTalia Courses</span>
               </Link>
               <div className="ml-6 flex space-x-8">
-                <Link href="/courses" className="text-gray-700 hover:text-pink-600 px-3 py-2 text-sm font-medium">
+                <Link href="/courses" className="text-gray-700 hover:text-primary-500 px-3 py-2 text-sm font-medium">
                   {t('backToCourses')}
                 </Link>
               </div>
@@ -116,7 +135,7 @@ export default function CoursePage() {
               <select
                 value={currency}
                 onChange={(e) => setCurrency(e.target.value as 'usd' | 'eur' | 'aed')}
-                className="border border-gray-300 rounded-md px-3 py-1 text-sm"
+                className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:ring-primary-500 focus:border-primary-500 transition-all duration-300"
               >
                 <option value="usd">USD ($)</option>
                 <option value="eur">EUR (€)</option>
@@ -133,76 +152,90 @@ export default function CoursePage() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Course Header */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <div className="h-64 bg-gradient-to-r from-pink-400 to-purple-500 rounded-lg flex items-center justify-center mb-6">
-                <span className="text-white text-8xl">🎂</span>
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-white/20 hover-lift">
+              <div className="h-64 bg-gradient-to-br from-primary-500 via-secondary-500 to-accent-500 rounded-2xl flex items-center justify-center mb-6 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary-500/20 to-dark-500/20"></div>
+                <span className="text-white text-8xl relative z-10 group-hover:scale-110 transition-transform duration-500">🎂</span>
+                <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm rounded-full p-3">
+                  <span className="text-white text-sm font-bold">POPULAR</span>
+                </div>
               </div>
               
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">{mockCourse.title}</h1>
-              <p className="text-lg text-gray-600 mb-4">{mockCourse.description}</p>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-500 to-dark-500 bg-clip-text text-transparent mb-4 animate-fade-in">
+                {mockCourse.title}
+              </h1>
+              <p className="text-lg text-gray-600 mb-4 animate-fade-in-delay">{mockCourse.description}</p>
               
-              <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-4">
-                <div className="flex items-center">
-                  <span className="mr-2">👩‍🍳</span>
-                  {mockCourse.instructor}
+              <div className="flex flex-wrap gap-4 text-sm mb-4">
+                <div className="flex items-center bg-primary-50 rounded-lg p-2 hover:bg-primary-100 transition-colors">
+                  <span className="mr-2 text-primary-500">👩‍🍳</span>
+                  <span className="text-gray-700 font-medium">{mockCourse.instructor}</span>
                 </div>
-                <div className="flex items-center">
-                  <span className="mr-2">⏰</span>
-                  {mockCourse.duration}
+                <div className="flex items-center bg-secondary-50 rounded-lg p-2 hover:bg-secondary-100 transition-colors">
+                  <span className="mr-2 text-secondary-500">⏰</span>
+                  <span className="text-gray-700 font-medium">{mockCourse.duration}</span>
                 </div>
-                <div className="flex items-center">
-                  <span className="mr-2">📊</span>
-                  {mockCourse.level}
+                <div className="flex items-center bg-accent-50 rounded-lg p-2 hover:bg-accent-100 transition-colors">
+                  <span className="mr-2 text-accent-500">📊</span>
+                  <span className="text-gray-700 font-medium">{mockCourse.level}</span>
                 </div>
-                <div className="flex items-center">
-                  <span className="mr-2">⭐</span>
-                  {mockCourse.rating} ({mockCourse.students} {t('students')})
+                <div className="flex items-center bg-dark-50 rounded-lg p-2 hover:bg-dark-100 transition-colors">
+                  <span className="mr-2 text-dark-500">⭐</span>
+                  <span className="text-gray-700 font-medium">{mockCourse.rating} ({mockCourse.students} {t('students')})</span>
                 </div>
               </div>
             </div>
 
             {/* Course Description */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('aboutCourse')}</h2>
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-white/20 hover-lift">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent mb-4">
+                {t('aboutCourse')}
+              </h2>
               <p className="text-gray-700 leading-relaxed">{mockCourse.fullDescription}</p>
             </div>
 
             {/* What You'll Learn */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('whatYouWillLearn')}</h2>
-              <ul className="space-y-2">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-white/20 hover-lift">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-secondary-500 to-accent-500 bg-clip-text text-transparent mb-4">
+                {t('whatYouWillLearn')}
+              </h2>
+              <ul className="space-y-3">
                 {mockCourse.whatYouWillLearn.map((item, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-green-500 mr-2 mt-1">✓</span>
-                    <span className="text-gray-700">{item}</span>
+                  <li key={index} className="flex items-start bg-gray-50 rounded-lg p-3 hover:bg-primary-50 transition-colors">
+                    <span className="text-primary-500 mr-3 mt-1 text-lg">✓</span>
+                    <span className="text-gray-700 font-medium">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Course Content */}
-            <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('courseContent')}</h2>
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 mb-6 border border-white/20 hover-lift">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-accent-500 to-dark-500 bg-clip-text text-transparent mb-4">
+                {t('courseContent')}
+              </h2>
               <div className="space-y-3">
                 {mockCourse.lessons.map((lesson, index) => (
-                  <div key={index} className="flex items-center p-3 border border-gray-200 rounded-lg">
-                    <span className="bg-pink-100 text-pink-800 text-sm px-2 py-1 rounded mr-3">
+                  <div key={index} className="flex items-center p-4 border border-gray-200 rounded-xl hover:border-primary-300 hover:bg-primary-50 transition-all duration-300 group">
+                    <span className="bg-gradient-to-r from-primary-500 to-secondary-500 text-white text-sm px-3 py-1 rounded-full mr-4 font-semibold shadow-md">
                       {index + 1}
                     </span>
-                    <span className="text-gray-700">{lesson}</span>
+                    <span className="text-gray-700 font-medium group-hover:text-primary-700 transition-colors">{lesson}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Requirements */}
-            <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('requirements')}</h2>
-              <ul className="space-y-2">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 border border-white/20 hover-lift">
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-dark-500 to-primary-500 bg-clip-text text-transparent mb-4">
+                {t('requirements')}
+              </h2>
+              <ul className="space-y-3">
                 {mockCourse.requirements.map((requirement, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="text-gray-400 mr-2 mt-1">•</span>
-                    <span className="text-gray-700">{requirement}</span>
+                  <li key={index} className="flex items-start bg-gray-50 rounded-lg p-3 hover:bg-secondary-50 transition-colors">
+                    <span className="text-secondary-500 mr-3 mt-1 text-lg">•</span>
+                    <span className="text-gray-700 font-medium">{requirement}</span>
                   </li>
                 ))}
               </ul>
@@ -211,9 +244,9 @@ export default function CoursePage() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-md p-6 sticky top-8">
+            <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-6 sticky top-8 border border-white/20 hover-lift">
               <div className="text-center mb-6">
-                <div className="text-3xl font-bold text-pink-600 mb-2">
+                <div className="text-3xl font-bold bg-gradient-to-r from-primary-500 to-dark-500 bg-clip-text text-transparent mb-2">
                   {getCurrencySymbol(currency)}{mockCourse.price[currency]}
                 </div>
                 <p className="text-gray-500">{t('oneTimePayment')}</p>
@@ -222,79 +255,44 @@ export default function CoursePage() {
               {!showPayment ? (
                 <button
                   onClick={handleEnrollClick}
-                  className="w-full bg-pink-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-pink-700 transition-colors mb-4"
+                  className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white py-3 px-4 rounded-lg font-semibold hover:from-primary-600 hover:to-secondary-600 transition-all duration-300 mb-4 shadow-lg hover:shadow-xl transform hover:scale-105"
                 >
                   {t('enrollNow')}
                 </button>
               ) : (
-                <div className="space-y-4">
-                  <div className="border-t pt-4">
-                    <h3 className="font-semibold text-gray-900 mb-3">{t('paymentDetails')}</h3>
-                    <div className="space-y-3">
-                      <input
-                        type="text"
-                        placeholder={t('cardNumber')}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2"
-                      />
-                      <div className="grid grid-cols-2 gap-3">
-                        <input
-                          type="text"
-                          placeholder={t('expiryDate')}
-                          className="border border-gray-300 rounded-md px-3 py-2"
-                        />
-                        <input
-                          type="text"
-                          placeholder={t('cvv')}
-                          className="border border-gray-300 rounded-md px-3 py-2"
-                        />
-                      </div>
-                      <input
-                        type="text"
-                        placeholder={t('cardholderName')}
-                        className="w-full border border-gray-300 rounded-md px-3 py-2"
-                      />
-                    </div>
-                  </div>
-                  
-                  <button
-                    onClick={handlePayment}
-                    disabled={isProcessing}
-                    className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors disabled:opacity-50"
-                  >
-                    {isProcessing ? t('processing') : `${t('payNow')} ${getCurrencySymbol(currency)}${mockCourse.price[currency]}`}
-                  </button>
-                  
-                  <button
-                    onClick={() => setShowPayment(false)}
-                    className="w-full text-gray-600 py-2 px-4 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    {t('cancel')}
-                  </button>
-                </div>
+                <PaymentSystem
+                  courseId={params.id as string}
+                  courseTitle={mockCourse.title}
+                  price={mockCourse.price}
+                  onPaymentSuccess={handlePaymentSuccess}
+                  onPaymentError={handlePaymentError}
+                />
               )}
 
               <div className="border-t pt-4 mt-4">
-                <h3 className="font-semibold text-gray-900 mb-3">{t('thisIncludes')}</h3>
-                <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="flex items-center">
-                    <span className="text-green-500 mr-2">✓</span>
-                    {t('lifetimeAccess')}
+                <h3 className="font-semibold bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text text-transparent mb-3">
+                  {t('thisIncludes')}
+                </h3>
+                <ul className="space-y-3 text-sm">
+                  <li className="flex items-center bg-gray-50 rounded-lg p-2 hover:bg-primary-50 transition-colors">
+                    <span className="text-primary-500 mr-3">✓</span>
+                    <span className="text-gray-700 font-medium">{t('lifetimeAccess')}</span>
                   </li>
-                  <li className="flex items-center">
-                    <span className="text-green-500 mr-2">✓</span>
-                    {t('videoLessons')}
+                  <li className="flex items-center bg-gray-50 rounded-lg p-2 hover:bg-secondary-50 transition-colors">
+                    <span className="text-secondary-500 mr-3">✓</span>
+                    <span className="text-gray-700 font-medium">{t('videoLessons')}</span>
                   </li>
-                  <li className="flex items-center">
-                    <span className="text-green-500 mr-2">✓</span>
-                    {t('downloadableResources')}
+                  <li className="flex items-center bg-gray-50 rounded-lg p-2 hover:bg-accent-50 transition-colors">
+                    <span className="text-accent-500 mr-3">✓</span>
+                    <span className="text-gray-700 font-medium">{t('downloadableResources')}</span>
                   </li>
-                  <li className="flex items-center">
-                    <span className="text-green-500 mr-2">✓</span>
-                    {t('certificateCompletion')}
+                  <li className="flex items-center bg-gray-50 rounded-lg p-2 hover:bg-dark-50 transition-colors">
+                    <span className="text-dark-500 mr-3">✓</span>
+                    <span className="text-gray-700 font-medium">{t('certificateCompletion')}</span>
                   </li>
-                  <li className="flex items-center">
-                    <span className="text-green-500 mr-2">✓</span>
-                    {t('aiSupport')}
+                  <li className="flex items-center bg-gray-50 rounded-lg p-2 hover:bg-primary-50 transition-colors">
+                    <span className="text-primary-500 mr-3">✓</span>
+                    <span className="text-gray-700 font-medium">{t('aiSupport')}</span>
                   </li>
                 </ul>
               </div>

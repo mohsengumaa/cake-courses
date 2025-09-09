@@ -30,7 +30,7 @@ export default function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-pink-600 transition-colors"
+        className="flex items-center space-x-2 px-3 py-2 text-sm font-medium text-gray-700 hover:text-primary-500 transition-colors"
       >
         <span className="text-lg">{currentLanguage?.flag}</span>
         <span>{currentLanguage?.name}</span>
@@ -60,7 +60,7 @@ export default function LanguageSwitcher() {
                   key={language.code}
                   onClick={() => handleLanguageChange(language.code)}
                   className={`w-full flex items-center space-x-3 px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${
-                    locale === language.code ? 'bg-pink-50 text-pink-600' : 'text-gray-700'
+                    locale === language.code ? 'bg-primary-50 text-primary-500' : 'text-gray-700'
                   }`}
                 >
                   <span className="text-lg">{language.flag}</span>

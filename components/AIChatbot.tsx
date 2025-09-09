@@ -145,7 +145,7 @@ export default function AIChatbot() {
       {!isOpen && (
         <button
           onClick={initializeChat}
-          className="fixed bottom-6 right-6 bg-pink-600 text-white p-4 rounded-full shadow-lg hover:bg-pink-700 transition-colors z-50"
+          className="fixed bottom-6 right-6 bg-primary-500 text-white p-4 rounded-full shadow-lg hover:bg-primary-600 transition-colors z-50"
           aria-label={t('openChat')}
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,9 +158,9 @@ export default function AIChatbot() {
       {isOpen && (
         <div className="fixed bottom-6 right-6 w-80 h-96 bg-white rounded-lg shadow-xl border border-gray-200 flex flex-col z-50">
           {/* Header */}
-          <div className="bg-pink-600 text-white p-4 rounded-t-lg flex justify-between items-center">
+          <div className="bg-primary-500 text-white p-4 rounded-t-lg flex justify-between items-center">
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-pink-500 rounded-full flex items-center justify-center mr-2">
+              <div className="w-8 h-8 bg-secondary-500 rounded-full flex items-center justify-center mr-2">
                 🤖
               </div>
               <div>
@@ -189,7 +189,7 @@ export default function AIChatbot() {
                   className={`max-w-xs px-3 py-2 rounded-lg text-sm ${
                     message.isBot
                       ? 'bg-gray-100 text-gray-800'
-                      : 'bg-pink-600 text-white'
+                      : 'bg-primary-500 text-white'
                   }`}
                 >
                   {message.text}
@@ -219,12 +219,12 @@ export default function AIChatbot() {
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder={t('typeMessage')}
-                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-500"
+                className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
               />
               <button
                 onClick={handleSendMessage}
                 disabled={!inputText.trim() || isTyping}
-                className="bg-pink-600 text-white p-2 rounded-lg hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-primary-500 text-white p-2 rounded-lg hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />

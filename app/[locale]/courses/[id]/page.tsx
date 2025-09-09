@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -74,7 +74,7 @@ export default function CoursePage() {
   const [isPurchased, setIsPurchased] = useState(false);
 
   // التحقق من حالة الشراء
-  useState(() => {
+  useEffect(() => {
     const purchasedCourses = JSON.parse(localStorage.getItem('purchasedCourses') || '[]');
     setIsPurchased(purchasedCourses.includes(params.id));
   }, [params.id]);
